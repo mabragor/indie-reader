@@ -42,3 +42,15 @@
 
 
 (export '(just-setq))
+
+
+;;; SBCL has some unicode support mashed into readtable, thus we need to mock this
+
+(in-package sb-impl)
+
+(defun readtable-normalization (readtable)
+  nil)
+
+(defun (setf readtable-normalization) (new-value readtable)
+  (declare (ignore new-value readtable))
+  nil)
