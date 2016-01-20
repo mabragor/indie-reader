@@ -14,6 +14,7 @@
   :depends-on (#:defmacro-enhance #:com.informatimago.common-lisp.lisp-reader
 		  #:fare-quasiquote)
   :components ((:file "package")
+	       #+sbcl (:file "sbcl-hacks")
                (:file "indie-reader")
 	       (:file "install-indie-reader")
 	       ))
