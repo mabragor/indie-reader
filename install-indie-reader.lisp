@@ -18,17 +18,21 @@
 	*read-suppress* *readtable*
 	;; ;; KLUDGE for SLIME to work
 	;; case syntax-table parse-token
-	))
+	)
 
-(progn (setf *readtable* (copy-readtable nil))
-
+       #+sbcl
+       (sb-c:just-setq cl-user::*readtable* (copy-readtable nil))
+       #-sbcl
+       (setf cl-user::*readtable* (copy-readtable nil))
+       
        ;; (fare-quasiquote:enable-quasiquote)
        (set-macro-character #\` (fare-quasiquote::backquote-reader nil) nil)
        (set-macro-character #\, #'fare-quasiquote::read-comma nil)
        (set-dispatch-macro-character #\# #\( #'fare-quasiquote::read-hash-paren)
        (set-dispatch-macro-character #\# #\. #'fare-quasiquote::read-hash-dot)
 
-       (setf swank/sbcl::*shebang-readtable* (swank/sbcl::create-shebang-readtable))
-       (setf swank::*default-readtable-alist* (swank::default-readtable-alist)))
+       ;; (setf swank/sbcl::*shebang-readtable* (swank/sbcl::create-shebang-readtable))
+       ;; (setf swank::*default-readtable-alist* (swank::default-readtable-alist))
+       )
 
 

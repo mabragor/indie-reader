@@ -16,29 +16,7 @@
         (let* ((name (first things))
                (value-form (second things))
                (leaf (or (lexenv-find name vars) (find-free-var name))))
-          (etypecase leaf
-            (leaf
-             (when (constant-p leaf)
-               (compiler-error "~S is a constant and thus can't be set." name))
-             (when (lambda-var-p leaf)
-               (let ((home-lambda (ctran-home-lambda-or-null start)))
-                 (when home-lambda
-                   (sset-adjoin leaf (lambda-calls-or-closes home-lambda))))
-               (when (lambda-var-ignorep leaf)
-                 ;; ANSI's definition of "Declaration IGNORE, IGNORABLE"
-                 ;; requires that this be a STYLE-WARNING, not a full warning.
-                 (compiler-style-warn
-                  "~S is being set even though it was declared to be ignored."
-                  name)))
-	     (just-setq-var start next result leaf value-form))
-            (cons
-             (aver (eq (car leaf) 'macro))
-             ;; FIXME: [Free] type declaration. -- APD, 2002-01-26
-             (ir1-convert start next result
-                          `(setf ,(cdr leaf) ,(second things))))
-            (heap-alien-info
-             (ir1-convert start next result
-                          `(%set-heap-alien ',leaf ,(second things))))))
+	  (just-setq-var start next result leaf value-form))
         (collect ((sets))
           (do ((thing things (cddr thing)))
               ((endp thing)

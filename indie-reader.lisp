@@ -33,11 +33,17 @@
 ;; 	 ,name))
 
 (defmacro intern-symbol-to-cl (name)
-  `(progn ;; (unintern ',name "CL-USER")
-	  ;; (shadowing-import ',name "CL-USER")
+  `(progn 
      #+sbcl(sb-c:just-setq ,(intern (string name) "CL-USER") ,name)
-     #-sbcl(setf ,(intern (string name) "CL-USER") ,name)
      (shadowing-import ',(intern (string name) "CL-USER") ,*package*)))
+  
+;; `(shadowing-import ',name "CL-USER"))
+
+  ;; `(progn ;; (unintern ',name "CL-USER")
+
+  ;;    #+sbcl(sb-c:just-setq ,(intern (string name) "CL-USER") ,name)
+  ;;    #-sbcl(setf ,(intern (string name) "CL-USER") ,name)
+  ;;    (shadowing-import ',(intern (string name) "CL-USER") ,*package*)))
 
   ;; `(progn (setf ,(intern (string name) "CL-USER") ,name)
   ;; 	  (shadowing-import ',(intern (string name) "CL-USER") ,*package*)))
